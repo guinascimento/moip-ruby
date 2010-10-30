@@ -6,7 +6,7 @@ describe "Make payments with the MoIP API" do
 
   before :all do
     @pagador = { :nome => "Luiz Inácio Lula da Silva",
-                :login_moip => "guinascimento",
+                :login_moip => "lula",
                 :email => "presidente@planalto.gov.br",
                 :tel_cel => "(61)9999-9999",
                 :apelido => "Lula",
