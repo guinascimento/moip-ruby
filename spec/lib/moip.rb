@@ -28,16 +28,16 @@ describe "Make payments with the MoIP API" do
 
   context "make a billet checkout" do
     it "should have status Sucesso" do
-      PayMaster::MoIP.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{ "ID"=>Time.now.strftime("%y%m%d%H%M%S"), "Status"=>"Sucesso", "Token" => "T2N0L0X8E0S71217U2H3W1T4F4S4G4K731D010V0S0V0S080M010E0Q082X2" }})
-      response = PayMaster::MoIP.checkout(@billet)
+      MoIP.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{ "ID"=>Time.now.strftime("%y%m%d%H%M%S"), "Status"=>"Sucesso", "Token" => "T2N0L0X8E0S71217U2H3W1T4F4S4G4K731D010V0S0V0S080M010E0Q082X2" }})
+      response = MoIP.checkout(@billet)
       response["Status"].should == "Sucesso"
     end
   end
 
   context "make a debit checkout" do
     it "should have status Sucesso" do
-      PayMaster::MoIP.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{ "ID"=>Time.now.strftime("%y%m%d%H%M%S"), "Status"=>"Sucesso", "Token" => "T2N0L0X8E0S71217U2H3W1T4F4S4G4K731D010V0S0V0S080M010E0Q082X2" }})
-      response = PayMaster::MoIP.checkout(@debit)
+      MoIP.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{ "ID"=>Time.now.strftime("%y%m%d%H%M%S"), "Status"=>"Sucesso", "Token" => "T2N0L0X8E0S71217U2H3W1T4F4S4G4K731D010V0S0V0S080M010E0Q082X2" }})
+      response = MoIP.checkout(@debit)
       response["Status"].should == "Sucesso"
     end
   end
@@ -45,22 +45,22 @@ describe "Make payments with the MoIP API" do
   context "make a debit checkout without pass a institution" do
     it "should have status Falha" do
       @incorrect_debit = { :value => "37.90", :id_proprio => id, :forma => "DebitoBancario", :pagador => @pagador }
-      PayMaster::MoIP.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"Pagamento direto não é possível com a instituição de pagamento enviada" }})
-      lambda { PayMaster::MoIP.checkout(@incorrect_debit) }.should raise_error(StandardError, "Pagamento direto não é possível com a instituição de pagamento enviada")
+      MoIP.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"Pagamento direto não é possível com a instituição de pagamento enviada" }})
+      lambda { MoIP.checkout(@incorrect_debit) }.should raise_error(StandardError, "Pagamento direto não é possível com a instituição de pagamento enviada")
     end
   end
 
   context "make a debit checkout without pass the payer informations" do
     it "should raise an exception" do
       @incorrect_debit = { :value => "37.90", :id_proprio => id, :forma => "DebitoBancario", :instituicao => "BancoDoBrasil" }
-      lambda { PayMaster::MoIP.checkout(@incorrect_debit) }.should raise_error(StandardError, "É obrigatório passar as informações do pagador")
+      lambda { MoIP.checkout(@incorrect_debit) }.should raise_error(StandardError, "É obrigatório passar as informações do pagador")
     end
   end
 
   context "make a credit card checkout" do
     it "should have status Sucesso" do
-      PayMaster::MoIP.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{ "ID"=>Time.now.strftime("%y%m%d%H%M%S"), "Status"=>"Sucesso", "Token" => "T2N0L0X8E0S71217U2H3W1T4F4S4G4K731D010V0S0V0S080M010E0Q082X2" }})
-      response = PayMaster::MoIP.checkout(@credit)
+      MoIP.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{ "ID"=>Time.now.strftime("%y%m%d%H%M%S"), "Status"=>"Sucesso", "Token" => "T2N0L0X8E0S71217U2H3W1T4F4S4G4K731D010V0S0V0S080M010E0Q082X2" }})
+      response = MoIP.checkout(@credit)
       response["Status"].should == "Sucesso"
     end
   end
@@ -68,49 +68,49 @@ describe "Make payments with the MoIP API" do
   context "make a credit card checkout without pass card informations" do
     it "should have status Falha" do
       @incorrect_credit = { :value => "8.90", :id_proprio => id, :forma => "CartaoCredito", :pagador => @pagador }
-      PayMaster::MoIP.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"Pagamento direto não é possível com a instituição de pagamento enviada" }})
-      lambda { PayMaster::MoIP.checkout(@incorrect_credit) }.should raise_error(StandardError, "Pagamento direto não é possível com a instituição de pagamento enviada")
+      MoIP.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"Pagamento direto não é possível com a instituição de pagamento enviada" }})
+      lambda { MoIP.checkout(@incorrect_credit) }.should raise_error(StandardError, "Pagamento direto não é possível com a instituição de pagamento enviada")
     end
   end
 
   context "in error scenario" do
     it "should raise an exception if response is nil" do
-      PayMaster::MoIP.stub!(:post).and_return(nil)
-      lambda { PayMaster::MoIP.checkout(@billet) }.should raise_error(StandardError, "Ocorreu um erro ao chamar o webservice")
+      MoIP.stub!(:post).and_return(nil)
+      lambda { MoIP.checkout(@billet) }.should raise_error(StandardError, "Ocorreu um erro ao chamar o webservice")
     end
 
     it "should raise an exception if status is fail" do
-      PayMaster::MoIP.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"O status da resposta é Falha" }})
-      lambda { PayMaster::MoIP.checkout(@billet) }.should raise_error(StandardError, "O status da resposta é Falha")
+      MoIP.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"O status da resposta é Falha" }})
+      lambda { MoIP.checkout(@billet) }.should raise_error(StandardError, "O status da resposta é Falha")
     end
   end
 
   context "query a transaction token" do
     it "should retrieve the transaction" do
-      PayMaster::MoIP.stub!(:get).and_return("ns1:ConsultarTokenResponse"=>{ "RespostaConsultar"=>{"Status"=>"Sucesso", "ID"=>"201010291031001210000000046760" }})
-      response = PayMaster::MoIP.query(token)
+      MoIP.stub!(:get).and_return("ns1:ConsultarTokenResponse"=>{ "RespostaConsultar"=>{"Status"=>"Sucesso", "ID"=>"201010291031001210000000046760" }})
+      response = MoIP.query(token)
       response["Status"].should == "Sucesso"
     end
   end
 
   context "query a transaction token in a error scenario" do
     it "should retrieve status Falha" do
-      PayMaster::MoIP.stub!(:get).and_return("ns1:ConsultarTokenResponse"=>{ "RespostaConsultar"=>{"Status"=>"Falha", "Erro"=>"Instrução não encontrada", "ID"=>"201010291102522860000000046768"}})
-      lambda { PayMaster::MoIP.query("000000000000000000000000000000000000000000000000000000000000") }.should raise_error(StandardError, "Instrução não encontrada")
+      MoIP.stub!(:get).and_return("ns1:ConsultarTokenResponse"=>{ "RespostaConsultar"=>{"Status"=>"Falha", "Erro"=>"Instrução não encontrada", "ID"=>"201010291102522860000000046768"}})
+      lambda { MoIP.query("000000000000000000000000000000000000000000000000000000000000") }.should raise_error(StandardError, "Instrução não encontrada")
     end
   end
 
   context "build the MoIP URL" do
     it "should build the correct URL" do
-      PayMaster::MoIP.moip_page(token).should == "#{CONFIG_TEST["uri"]}/Instrucao.do?token=#{token}"
+      MoIP.moip_page(token).should == "#{CONFIG_TEST["uri"]}/Instrucao.do?token=#{token}"
     end
 
     it "should raise an error if the token is not informed" do
-      lambda { PayMaster::MoIP.moip_page("").should raise_error(ArgumentError, "É necessário informar um token para retornar os dados da transação") }
+      lambda { MoIP.moip_page("").should raise_error(ArgumentError, "É necessário informar um token para retornar os dados da transação") }
     end
 
     it "should raise an error if nil is passed as the token" do
-      lambda { PayMasterPayMaster::MoIP.moip_page(nil).should raise_error(ArgumentError, "É necessário informar um token para retornar os dados da transação") }
+      lambda { MoIP.moip_page(nil).should raise_error(ArgumentError, "É necessário informar um token para retornar os dados da transação") }
     end
   end
 

@@ -1,4 +1,4 @@
-module PayMaster
+module MoIP
 
   class DirectPayment
 

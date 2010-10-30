@@ -4,12 +4,10 @@ require "nokogiri"
 
 require "direct_payment"
 
-module PayMaster
-
-  class MoIP
+module MoIP
     include HTTParty
 
-    CONFIG = YAML.load_file("config.yaml")["development"]
+    CONFIG = YAML.load_file("../config.yaml")["development"]
     STATUS = { 1 => "authorized", 2 => "started", 3 => "printed", 4 => "completed", 5 => "canceled", 6 => "analysing"}
 
     base_uri "#{CONFIG["uri"]}/ws/alpha"
@@ -59,7 +57,5 @@ module PayMaster
       end
 
     end
-
-  end
 
 end
