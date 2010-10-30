@@ -5,12 +5,12 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "moip"
-    gem.summary = %Q{Gem MoIP}
-    gem.description = %Q{Gem MoIP}
+    gem.summary = %Q{Gem para utilização da API MoIP}
+    gem.description = %Q{Gem para utilização da API MoIP}
     gem.email = "guilherme.ruby@gmail.com"
     gem.homepage = "http://github.com/guinascimento/moip"
     gem.authors = ["Guilherme Nascimento"]
-    gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
+#    gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
@@ -50,4 +50,14 @@ Rake::RDocTask.new do |rdoc|
   rdoc.title = "moip #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
+end
+
+require 'spec/rake/spectask'
+
+desc "Run all examples with RCov"
+Spec::Rake::SpecTask.new('spec') do |t|
+  t.spec_files = FileList['spec/lib/moip.rb']
+  t.rcov = true
+  t.rcov_opts = %w{--exclude gems}
+  t.spec_opts = ["--format", "specdoc", "--dry-run", "--color"]
 end
