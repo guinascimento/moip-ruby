@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
      "VERSION",
      "config.yaml",
      "lib/direct_payment.rb",
+     "lib/main.rb",
      "lib/moip.rb",
      "moip.gemspec",
      "spec/lib/moip.rb",
