@@ -20,7 +20,7 @@ As formas de pagamento disponibilizadas pela Gem são:
 
 ## Utilização
 
-Para utilizar a Gem é necessário criar uma conta na SandBox do MoIP. Após criar a conta, adicione o token e chave ao arquivo config.yaml.
+Para utilizar a Gem é necessário criar uma conta na SandBox do MoIP. Após criar a conta, renomeie o arquivo sample.config.yaml para config.yaml e adicione o token e chave do MoIP.
 
 ###Crie os dados do pagador
 
