@@ -52,12 +52,3 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-require 'spec/rake/spectask'
-
-desc "Run all examples with RCov"
-  Spec::Rake::SpecTask.new('spec') do |t|
-  t.spec_files = FileList['spec/lib/moip.rb']
-  t.rcov = true
-  t.rcov_opts = %w{--exclude gems}
-  t.spec_opts = ["--format", "specdoc", "--dry-run", "--color"]
-end
