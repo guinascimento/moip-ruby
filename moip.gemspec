@@ -9,18 +9,18 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Guilherme Nascimento"]
-  s.date = %q{2010-10-30}
+  s.date = %q{2010-11-01}
   s.description = %q{Gem para utilização da API MoIP}
   s.email = %q{guilherme.ruby@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.rdoc"
+     "README.markdown"
   ]
   s.files = [
     ".document",
      ".gitignore",
      "LICENSE",
-     "README.rdoc",
+     "README.markdown",
      "Rakefile",
      "VERSION",
      "config.yaml",
@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
      "lib/main.rb",
      "lib/moip.rb",
      "moip.gemspec",
+     "spec/lib/config.yaml",
      "spec/lib/moip.rb",
      "spec/spec_helper.rb"
   ]
