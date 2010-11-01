@@ -37,3 +37,4 @@ Esta Gem permite utilizar a API do MoIP, gateway de pagamentos do IG
 ###Faça o checkout
 
 	MoIP.checkout(boleto)
+	reponse = MoIP.moip_page(response["Token"])
