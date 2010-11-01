@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{moip}
-  s.version = "1.0.0"
+  s.version = "1.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Guilherme Nascimento"]
@@ -27,9 +27,7 @@ Gem::Specification.new do |s|
      "lib/moip.rb",
      "moip.gemspec",
      "sample.config.yaml",
-     "spec/lib/config.yaml",
-     "spec/lib/moip.rb",
-     "spec/spec_helper.rb"
+     "spec/lib/config.yaml"
   ]
   s.homepage = %q{http://github.com/guinascimento/moip}
   s.rdoc_options = ["--charset=UTF-8"]
@@ -37,8 +35,7 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{Gem para utilização da API MoIP}
   s.test_files = [
-    "spec/lib/moip.rb",
-     "spec/spec_helper.rb"
+    "spec/lib/moip_spec.rb"
   ]
 
   if s.respond_to? :specification_version then
