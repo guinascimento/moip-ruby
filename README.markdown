@@ -20,6 +20,8 @@ As formas de pagamento disponibilizadas pela Gem são:
 
 ## Utilização
 
+Para utilizar a Gem é necessário criar uma conta na SandBox do MoIP. Após criar a conta, adicione o token e chave ao arquivo config.yaml.
+
 ###Crie os dados do pagador
 
 	pagador = { :nome => "Luiz Inácio Lula da Silva",
@@ -50,3 +52,6 @@ As formas de pagamento disponibilizadas pela Gem são:
 
 	MoIP.checkout(boleto)
 	reponse = MoIP.moip_page(response["Token"])
+
+
+Baseado no projeto do [Daniel Lopes](http://github.com/danielvlopes/moip_usage).
