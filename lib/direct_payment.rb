@@ -13,7 +13,7 @@ module MoIP
             xml.InstrucaoUnica {
               # Dados da transação
               xml.Razao {
-                xml.text "Pagamento - Questões de Concursos"
+                xml.text "Pagamento"
               }
               xml.Valores {
                 xml.Valor(:moeda => "BRL") {
