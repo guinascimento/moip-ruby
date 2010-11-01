@@ -21,4 +21,4 @@ pkg
 ## PROJECT::SPECIFIC
 
 lib/main.rb
-gateway.yaml
+config.yaml
