@@ -1,6 +1,18 @@
 # MoIP
 
-Esta Gem permite utilizar a API do MoIP, gateway de pagamentos do IG
+Esta Gem permite utilizar a API do MoIP, gateway de pagamentos do IG.
+
+## Pagamento direto:
+
+	O Pagamento Direto é um recurso que a MoIP disponibiliza para aqueles clientes que necessitam de uma flexibilidade maior do que a Integração HTML pode oferecer.
+
+	Diferentemente de como é feito com a Integração HTML, seu cliente não precisa ser redirecionado para o site da MoIP para concluir a compra: tudo é feito dentro do ambiente do seu site, dando ao cliente uma maior segurança e confiança no processo.
+	
+	As formas de pagamento disponibilizadas pela Gem são:
+
+	* Boleto
+	* Débito
+	* Cartão de Crédito
 
 ## Instalação
 
