@@ -9,6 +9,7 @@ $ gem install moip
 ## Utilização
 
 Crie os dados do pagador
+
 pagador = { :nome => "Luiz Inácio Lula da Silva",
             :login_moip => "lula",
             :email => "presidente@planalto.gov.br",
@@ -26,6 +27,7 @@ pagador = { :nome => "Luiz Inácio Lula da Silva",
             :tel_fixo => "(61)3211-1221" }
 
 Dados do boleto
+
 boleto = { :valor => "50",
 		   :id_proprio => "Pag#{rand(1000)}",
 	       :forma => "BoletoBancario",
@@ -33,4 +35,5 @@ boleto = { :valor => "50",
 	       :pagador => pagador }
 
 Faça o checkout
-MoIP.checkout(boleto)
+
+	MoIP.checkout(boleto)
