@@ -1,10 +1,8 @@
-= MoIP
+# MoIP
 
 Esta Gem permite utilizar a API do MoIP, gateway de pagamentos do IG
 
-## Hello, world
-
-Instale a gem: 
+## Instalação
 
 $ gem install moip
 
@@ -35,4 +33,4 @@ boleto = { :valor => "50",
 	       :pagador => pagador }
 
 Faça o checkout
-PayMaster::MoIP.checkout(boleto)
+MoIP.checkout(boleto)

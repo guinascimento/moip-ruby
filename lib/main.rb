@@ -29,7 +29,7 @@ debito = { :valor => "8.90",
          }
 
 response = MoIP.checkout(boleto)
-#puts PayMaster::MoIP.moip_page(response["Token"])
+puts MoIP.moip_page(response["Token"])
 
            
 #debito = { :valor => "8.90", :id_proprio => "Pag#{rand(1000)}", :forma => "DebitoBancario", :instituicao => "Itau" }
