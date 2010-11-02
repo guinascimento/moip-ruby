@@ -1,6 +1,6 @@
 require 'rails/generators'
 require 'rails/generators/named_base'
- 
+
 module Moip
   module Generators
     class ConfigGenerator < ::Rails::Generators::NamedBase
