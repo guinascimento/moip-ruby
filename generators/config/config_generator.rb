@@ -6,7 +6,7 @@ module MoIP
       argument :database_name, :type => :string, :optional => true
 
       def self.source_root
-        @_moip_source_root ||= File.expand_path("../templates", __FILE__)
+        @_moip_source_root ||= File.expand_path("/templates", __FILE__)
       end
 
       def app_name
