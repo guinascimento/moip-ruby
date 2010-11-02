@@ -7,7 +7,7 @@ module Moip
       source_root File.expand_path(File.join(File.dirname(__FILE__), 'templates'))
 
       def create_config_file
-        template 'config.yml', File.join('config', "config.yml")
+        template 'moip.yml', File.join('config', "moip.yml")
       end
     end
   end
