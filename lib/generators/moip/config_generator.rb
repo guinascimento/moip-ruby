@@ -1,13 +1,9 @@
 require 'rails/generators'
 require 'rails/generators/named_base'
  
-module MoIP
+module Moip
   module Generators
-    class MoIPGenerator < ::Rails::Generators::NamedBase
-      desc "Creates a Mongoid configuration file at config/mongoid.yml"
-
-      argument :database_name, :type => :string, :optional => true
-
+    class ConfigGenerator < ::Rails::Generators::NamedBase
       source_root File.expand_path(File.join(File.dirname(__FILE__), 'templates'))
 
       def create_config_file
