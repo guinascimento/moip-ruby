@@ -56,6 +56,8 @@ Para utilizar a Gem é necessário criar uma conta na SandBox do MoIP. Após cri
 
 	def checkout
 		MoIP.checkout(boleto)
+
+		# exibe o boleto para impressão
 		redirect_to MoIP.moip_page(response["Token"])
 	end
 
