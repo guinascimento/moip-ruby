@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{moip}
-  s.version = "1.5.0"
+  s.version = "1.6.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Guilherme Nascimento"]
@@ -25,9 +25,8 @@ Gem::Specification.new do |s|
      "VERSION",
      "lib/direct_payment.rb",
      "lib/moip.rb",
-     "lib/rails/generators/moip/config/config_generator.rb",
-     "lib/rails/generators/moip/config/templates/moip.yml",
-     "lib/rails/generators/moip_generator.rb",
+     "lib/rails/generators/moip/config_generator.rb",
+     "lib/rails/generators/moip/templates/config.yml",
      "moip.gemspec",
      "sample.config.yaml",
      "spec/lib/config.yaml",
