@@ -1,4 +1,4 @@
-require 'rails/generators/mongoid_generator'
+require 'rails/generators/moip_generator'
 
 module MoIP
   module Generators
