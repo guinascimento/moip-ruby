@@ -1,0 +1,14 @@
+development:
+    uri: https://desenvolvedor.moip.com.br/sandbox
+    token: 
+    key: 
+
+test:
+    uri: https://desenvolvedor.moip.com.br/sandbox
+    token: 
+    key: 
+
+production:
+    uri: 
+    token: 
+    key:
