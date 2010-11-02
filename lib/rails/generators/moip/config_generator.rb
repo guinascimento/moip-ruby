@@ -1,5 +1,3 @@
-require 'rails/generators/moip_generator'
-
 module MoIP
   module Generators
     class ConfigGenerator < Rails::Generators::Base
@@ -16,7 +14,7 @@ module MoIP
       end
 
       def create_config_file
-        template 'moip.yml', File.join('config', "config.yml")
+        template 'config.yml', File.join('config', "config.yml")
       end
 
     end
