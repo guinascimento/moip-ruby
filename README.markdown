@@ -48,10 +48,12 @@ Para utilizar a Gem é necessário criar uma conta na SandBox do MoIP. Após cri
 	           :dias_expiracao => 5,
 	           :pagador => pagador }
 
-###Faça o checkout
+###Checkout
 
-	MoIP.checkout(boleto)
-	reponse = MoIP.moip_page(response["Token"])
+	def checkout
+		MoIP.checkout(boleto)
+		redirect_to MoIP.moip_page(response["Token"])
+	end
 
 
 Baseado no projeto do [Daniel Lopes](http://github.com/danielvlopes/moip_usage).
