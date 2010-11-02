@@ -18,6 +18,10 @@ As formas de pagamento disponibilizadas pela Gem são:
 
 	gem install moip
 
+## Adicione ao Gemfile
+
+	gem "moip"
+
 ## Utilização
 
 Para utilizar a Gem é necessário criar uma conta na SandBox do MoIP. Após criar a conta, crie o arquivo moip.yml na pasta Rails.root/config e adicione o token e chave do MoIP.
