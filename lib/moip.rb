@@ -17,7 +17,7 @@ module MoIP
 
       # Envia uma instrução para pagamento único
       def checkout(attributes = {})
-        full_data = post('EnviarInstrucao/Unica', :body => DirectPayment.direct(attributes))
+        full_data = post('EnviarInstrucao/Unica', :body => DirectPayment.body(attributes))
 
         raise(StandardError, "Ocorreu um erro ao chamar o webservice") if full_data.nil?
 

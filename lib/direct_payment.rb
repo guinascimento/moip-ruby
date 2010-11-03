@@ -5,7 +5,7 @@ module MoIP
     class << self
 
       # Cria uma instrução de pagamento direto
-      def direct(attributes = {})
+      def body(attributes = {})
         builder = Nokogiri::XML::Builder.new(:encoding => "UTF-8") do |xml|
 
           # Identificador do tipo de instrução
