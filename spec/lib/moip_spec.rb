@@ -114,6 +114,26 @@ describe "Make payments with the MoIP API" do
     end
   end
 
+  context "when receive notification" do
+    before(:each) do
+      @params = { "id_transacao" => "Pag62", "valor" => "8.90", "status_pagamento" => "3", "cod_moip" => "001", "forma_pagamento" => "73", "tipo_pagamento" => "BoletoBancario", "email_consumidor" => "presidente@planalto.gov.br" }
+    end
+
+    it "should return a hash with the params extracted from NASP" do
+      response = { :transaction_id => "Pag62", :amount => "8.90", :status => "printed", :code => "001", :payment_type => "BoletoBancario", :email => "presidente@planalto.gov.br" }
+      QPag.notification(@params).should == response
+    end
+
+    it "should return valid status based on status code" do
+      QPag::STATUS[1].should == "authorized"
+      QPag::STATUS[2].should == "started"
+      QPag::STATUS[3].should == "printed"
+      QPag::STATUS[4].should == "completed"
+      QPag::STATUS[5].should == "canceled"
+      QPag::STATUS[6].should == "analysing"
+    end
+  end
+
   def id
     "transaction_" + Digest::SHA1.hexdigest([Time.now, rand].join)
   end

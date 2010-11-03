@@ -75,5 +75,10 @@ Após realizar os testes na SandBox, você poderá fazer a mudança para o ambie
 		redirect_to MoIP.moip_page(response["Token"])
 	end
 
+### Futuras funcionalidades
+
+* Pagamento Simples
+* Pagamento Recorrente
+
 
 Baseado no projeto do [Daniel Lopes](http://github.com/danielvlopes/moip_usage).
