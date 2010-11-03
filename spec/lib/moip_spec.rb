@@ -2,8 +2,6 @@ require "moip"
 
 describe "Make payments with the MoIP API" do
 
-  CONFIG_TEST = YAML.load_file("config.yaml")["test"]
-
   before :all do
     @pagador = { :nome => "Luiz Inácio Lula da Silva",
                 :login_moip => "lula",
@@ -102,7 +100,7 @@ describe "Make payments with the MoIP API" do
 
   context "build the MoIP URL" do
     it "should build the correct URL" do
-      MoIP.moip_page(token).should == "#{CONFIG_TEST["uri"]}/Instrucao.do?token=#{token}"
+      MoIP.moip_page(token).should == "https://desenvolvedor.moip.com.br/sandbox/Instrucao.do?token=#{token}"
     end
 
     it "should raise an error if the token is not informed" do
@@ -121,16 +119,16 @@ describe "Make payments with the MoIP API" do
 
     it "should return a hash with the params extracted from NASP" do
       response = { :transaction_id => "Pag62", :amount => "8.90", :status => "printed", :code => "001", :payment_type => "BoletoBancario", :email => "presidente@planalto.gov.br" }
-      QPag.notification(@params).should == response
+      MoIP.notification(@params).should == response
     end
 
     it "should return valid status based on status code" do
-      QPag::STATUS[1].should == "authorized"
-      QPag::STATUS[2].should == "started"
-      QPag::STATUS[3].should == "printed"
-      QPag::STATUS[4].should == "completed"
-      QPag::STATUS[5].should == "canceled"
-      QPag::STATUS[6].should == "analysing"
+      MoIP::STATUS[1].should == "authorized"
+      MoIP::STATUS[2].should == "started"
+      MoIP::STATUS[3].should == "printed"
+      MoIP::STATUS[4].should == "completed"
+      MoIP::STATUS[5].should == "canceled"
+      MoIP::STATUS[6].should == "analysing"
     end
   end
 

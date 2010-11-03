@@ -48,7 +48,7 @@ module MoIP
       def notification(params)
         notification = {}
         notification[:transaction_id] = params["id_transacao"]
-        notification[:amount]         = sprintf("%.2f", params["valor"].to_f / 100).to_d
+        notification[:amount]         = params["valor"]
         notification[:status]         = STATUS[params["status_pagamento"].to_i]
         notification[:code]           = params["cod_moip"]
         notification[:payment_type]   = params["tipo_pagamento"]

@@ -22,3 +22,5 @@ pkg
 
 lib/main.rb
 config.yaml
+config/
+config/*
