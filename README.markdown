@@ -24,7 +24,7 @@ Adicione a Gem ao Gemfile
 
 ## Utilização
 
-O MoIP possui uma SandBox de testes que permite a simulação de pagamentos. Para utilizar a Gem com o SandBox, crie o arquivo moip.yml na pasta Rails.root/config e adicione o token e chave do MoIP.
+O MoIP possui uma SandBox de testes que permite a simulação de pagamentos. Para utilizar a Gem com o SandBox, crie o arquivo moip.yml na pasta config do seu projeto Rails e adicione o token e chave do MoIP.
 
 ## moip.yml
 
