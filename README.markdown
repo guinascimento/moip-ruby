@@ -69,7 +69,7 @@ Após realizar os testes na SandBox, você poderá fazer a mudança para o ambie
 ###Checkout
 
 	def checkout
-		MoIP.checkout(boleto)
+		response = MoIP.checkout(boleto)
 
 		# exibe o boleto para impressão
 		redirect_to MoIP.moip_page(response["Token"])
