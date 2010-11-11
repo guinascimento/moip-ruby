@@ -31,81 +31,104 @@ describe "Make payments with the MoIP API" do
     @credit = { :value => "8.90", :id_proprio => id, :forma => "CartaoCredito", :instituicao => "AmericanExpress", :numero => "345678901234564", :expiracao => "08/11", :codigo_seguranca => "1234", :nome => "João Silva", :identidade => "134.277.017.00", :telefone => "(21)9208-0547", :data_nascimento => "25/10/1980", :parcelas => "2", :recebimento => "AVista", :pagador => @pagador }
   end
 
-  context "make a billet checkout" do
-    it "should have status Sucesso" do
+  context "checkout" do
+    before(:each) do
       MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{ "ID"=>Time.now.strftime("%y%m%d%H%M%S"), "Status"=>"Sucesso", "Token" => "T2N0L0X8E0S71217U2H3W1T4F4S4G4K731D010V0S0V0S080M010E0Q082X2" }})
-      response = MoIP::Client.checkout(@billet)
-      response["Status"].should == "Sucesso"
-    end
-  end
-
-  context "make a debit checkout" do
-    it "should have status Sucesso" do
-      MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{ "ID"=>Time.now.strftime("%y%m%d%H%M%S"), "Status"=>"Sucesso", "Token" => "T2N0L0X8E0S71217U2H3W1T4F4S4G4K731D010V0S0V0S080M010E0Q082X2" }})
-      response = MoIP::Client.checkout(@debit)
-      response["Status"].should == "Sucesso"
-    end
-  end
-
-  context "make a debit checkout without pass a institution" do
-    it "should have status Falha" do
-      @incorrect_debit = { :value => "37.90", :id_proprio => id, :forma => "DebitoBancario", :pagador => @pagador }
-      MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"Pagamento direto não é possível com a instituição de pagamento enviada" }})
-      lambda { MoIP::Client.checkout(@incorrect_debit) }.should raise_error(StandardError, "Pagamento direto não é possível com a instituição de pagamento enviada")
-    end
-  end
-
-  context "make a debit checkout without pass the payer informations" do
-    it "should raise an exception" do
-      @incorrect_debit = { :value => "37.90", :id_proprio => id, :forma => "DebitoBancario", :instituicao => "BancoDoBrasil" }
-      lambda { MoIP::Client.checkout(@incorrect_debit) }.should raise_error(StandardError, "É obrigatório passar as informações do pagador")
-    end
-  end
-
-  context "make a credit card checkout" do
-    it "should have status Sucesso" do
-      MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{ "ID"=>Time.now.strftime("%y%m%d%H%M%S"), "Status"=>"Sucesso", "Token" => "T2N0L0X8E0S71217U2H3W1T4F4S4G4K731D010V0S0V0S080M010E0Q082X2" }})
-      response = MoIP::Client.checkout(@credit)
-      response["Status"].should == "Sucesso"
-    end
-  end
-
-  context "make a credit card checkout without pass card informations" do
-    it "should have status Falha" do
-      @incorrect_credit = { :value => "8.90", :id_proprio => id, :forma => "CartaoCredito", :pagador => @pagador }
-      MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"Pagamento direto não é possível com a instituição de pagamento enviada" }})
-      lambda { MoIP::Client.checkout(@incorrect_credit) }.should raise_error(StandardError, "Pagamento direto não é possível com a instituição de pagamento enviada")
-    end
-  end
-
-  context "in error scenario" do
-    it "should raise an exception if response is nil" do
-      MoIP::Client.stub!(:post).and_return(nil)
-      lambda { MoIP::Client.checkout(@billet) }.should raise_error(StandardError, "Ocorreu um erro ao chamar o webservice")
     end
 
-    it "should raise an exception if status is fail" do
-      MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"O status da resposta é Falha" }})
-      lambda { MoIP::Client.checkout(@billet) }.should raise_error(StandardError, "O status da resposta é Falha")
+    it "with old api should be deprecated" do
+      deprecations = collect_deprecations{ MoIP.checkout(@billet) }
+      
+      deprecations.should_not be_empty
+      deprecations.any? {|w| w =~ /MoIP.checkout has been deprecated/ }.should be_true
+    end
+
+    context "when is a billet checkout" do
+      it "should have status 'Sucesso'" do
+        response = MoIP::Client.checkout(@billet)
+        response["Status"].should == "Sucesso"
+      end
+    end
+
+    context "when is a debit checkout" do
+      it "should have status 'Sucesso' with valid arguments" do
+        response = MoIP::Client.checkout(@debit)
+        response["Status"].should == "Sucesso"
+      end
+
+      it "should have status 'Falha' when a instituition is not passed as argument" do
+        @incorrect_debit = { :value => "37.90", :id_proprio => id, :forma => "DebitoBancario", :pagador => @pagador }
+
+        MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"Pagamento direto não é possível com a instituição de pagamento enviada" }})
+
+        lambda { MoIP::Client.checkout(@incorrect_debit) }.should raise_error(StandardError, "Pagamento direto não é possível com a instituição de pagamento enviada")
+      end
+
+      it "should raise an exception if payer isformations is not passed" do
+        @incorrect_debit = { :value => "37.90", :id_proprio => id, :forma => "DebitoBancario", :instituicao => "BancoDoBrasil" }
+        lambda { MoIP::Client.checkout(@incorrect_debit) }.should raise_error(StandardError, "É obrigatório passar as informações do pagador")
+      end
+    end
+
+    context "when is a credit card checkout" do
+      it "should have status 'Sucesso' with valid arguments" do
+        response = MoIP::Client.checkout(@credit)
+        response["Status"].should == "Sucesso"
+      end
+
+      it "should have status 'Falha' when the card informations is not passed as argument" do
+        @incorrect_credit = { :value => "8.90", :id_proprio => id, :forma => "CartaoCredito", :pagador => @pagador }
+        MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"Pagamento direto não é possível com a instituição de pagamento enviada" }})
+        lambda { MoIP::Client.checkout(@incorrect_credit) }.should raise_error(StandardError, "Pagamento direto não é possível com a instituição de pagamento enviada")
+      end
+    end
+
+    context "in error scenario" do
+      it "should raise an exception if response is nil" do
+        MoIP::Client.stub!(:post).and_return(nil)
+        lambda { MoIP::Client.checkout(@billet) }.should raise_error(StandardError, "Ocorreu um erro ao chamar o webservice")
+      end
+
+      it "should raise an exception if status is fail" do
+        MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"O status da resposta é Falha" }})
+        lambda { MoIP::Client.checkout(@billet) }.should raise_error(StandardError, "O status da resposta é Falha")
+      end
     end
   end
 
   context "query a transaction token" do
-    it "should retrieve the transaction" do
+    before(:each) do
       MoIP::Client.stub!(:get).and_return("ns1:ConsultarTokenResponse"=>{ "RespostaConsultar"=>{"Status"=>"Sucesso", "ID"=>"201010291031001210000000046760" }})
+    end
+
+    it "with old api should be deprecated" do
+      deprecations = collect_deprecations{ MoIP.query(token) }
+      
+      deprecations.should_not be_empty
+      deprecations.any? {|w| w =~ /MoIP.query has been deprecated/ }.should be_true
+    end
+
+    it "should retrieve the transaction" do
       response = MoIP::Client.query(token)
       response["Status"].should == "Sucesso"
     end
-  end
 
-  context "query a transaction token in a error scenario" do
-    it "should retrieve status Falha" do
-      MoIP::Client.stub!(:get).and_return("ns1:ConsultarTokenResponse"=>{ "RespostaConsultar"=>{"Status"=>"Falha", "Erro"=>"Instrução não encontrada", "ID"=>"201010291102522860000000046768"}})
-      lambda { MoIP::Client.query("000000000000000000000000000000000000000000000000000000000000") }.should raise_error(StandardError, "Instrução não encontrada")
+    context "in a error scenario" do
+      it "should retrieve status 'Falha'" do
+        MoIP::Client.stub!(:get).and_return("ns1:ConsultarTokenResponse"=>{ "RespostaConsultar"=>{"Status"=>"Falha", "Erro"=>"Instrução não encontrada", "ID"=>"201010291102522860000000046768"}})
+        lambda { MoIP::Client.query("000000000000000000000000000000000000000000000000000000000000") }.should raise_error(StandardError, "Instrução não encontrada")
+      end
     end
   end
 
   context "build the MoIP URL" do
+    it "with old api should be deprecated" do
+      deprecations = collect_deprecations{ MoIP.moip_page(token) }
+      
+      deprecations.should_not be_empty
+      deprecations.any? {|w| w =~ /MoIP.moip_page has been deprecated/ }.should be_true
+    end
+
     it "should build the correct URL" do
       MoIP::Client.moip_page(token).should == "https://desenvolvedor.moip.com.br/sandbox/Instrucao.do?token=#{token}"
     end
@@ -122,6 +145,13 @@ describe "Make payments with the MoIP API" do
   context "when receive notification" do
     before(:each) do
       @params = { "id_transacao" => "Pag62", "valor" => "8.90", "status_pagamento" => "3", "cod_moip" => "001", "forma_pagamento" => "73", "tipo_pagamento" => "BoletoBancario", "email_consumidor" => "presidente@planalto.gov.br" }
+    end
+
+    it "with old api should be deprecated" do
+      deprecations = collect_deprecations{ MoIP.notification(@param) }
+      
+      deprecations.should_not be_empty
+      deprecations.any? {|w| w =~ /MoIP.notification has been deprecated/ }.should be_true
     end
 
     it "should return a hash with the params extracted from NASP" do
@@ -147,4 +177,15 @@ describe "Make payments with the MoIP API" do
     "T2X0Q1N021E0B2S9U1P0V3Y0G1F570Y2P4M0P000M0Z0F0J0G0U4N6C7W5T9"
   end
 
+  def collect_deprecations
+    old_behavior = ActiveSupport::Deprecation.behavior
+    deprecations = []
+    ActiveSupport::Deprecation.behavior = Proc.new do |message, callstack|
+      deprecations << message
+    end
+    result = yield
+    deprecations
+  ensure
+    ActiveSupport::Deprecation.behavior = old_behavior
+  end
 end
