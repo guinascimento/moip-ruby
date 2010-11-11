@@ -1,4 +1,6 @@
 # encoding: utf-8
+require "nokogiri"
+
 module MoIP
 
   class DirectPayment

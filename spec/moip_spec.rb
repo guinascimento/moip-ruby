@@ -33,16 +33,16 @@ describe "Make payments with the MoIP API" do
 
   context "make a billet checkout" do
     it "should have status Sucesso" do
-      MoIP.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{ "ID"=>Time.now.strftime("%y%m%d%H%M%S"), "Status"=>"Sucesso", "Token" => "T2N0L0X8E0S71217U2H3W1T4F4S4G4K731D010V0S0V0S080M010E0Q082X2" }})
-      response = MoIP.checkout(@billet)
+      MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{ "ID"=>Time.now.strftime("%y%m%d%H%M%S"), "Status"=>"Sucesso", "Token" => "T2N0L0X8E0S71217U2H3W1T4F4S4G4K731D010V0S0V0S080M010E0Q082X2" }})
+      response = MoIP::Client.checkout(@billet)
       response["Status"].should == "Sucesso"
     end
   end
 
   context "make a debit checkout" do
     it "should have status Sucesso" do
-      MoIP.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{ "ID"=>Time.now.strftime("%y%m%d%H%M%S"), "Status"=>"Sucesso", "Token" => "T2N0L0X8E0S71217U2H3W1T4F4S4G4K731D010V0S0V0S080M010E0Q082X2" }})
-      response = MoIP.checkout(@debit)
+      MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{ "ID"=>Time.now.strftime("%y%m%d%H%M%S"), "Status"=>"Sucesso", "Token" => "T2N0L0X8E0S71217U2H3W1T4F4S4G4K731D010V0S0V0S080M010E0Q082X2" }})
+      response = MoIP::Client.checkout(@debit)
       response["Status"].should == "Sucesso"
     end
   end
@@ -50,22 +50,22 @@ describe "Make payments with the MoIP API" do
   context "make a debit checkout without pass a institution" do
     it "should have status Falha" do
       @incorrect_debit = { :value => "37.90", :id_proprio => id, :forma => "DebitoBancario", :pagador => @pagador }
-      MoIP.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"Pagamento direto não é possível com a instituição de pagamento enviada" }})
-      lambda { MoIP.checkout(@incorrect_debit) }.should raise_error(StandardError, "Pagamento direto não é possível com a instituição de pagamento enviada")
+      MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"Pagamento direto não é possível com a instituição de pagamento enviada" }})
+      lambda { MoIP::Client.checkout(@incorrect_debit) }.should raise_error(StandardError, "Pagamento direto não é possível com a instituição de pagamento enviada")
     end
   end
 
   context "make a debit checkout without pass the payer informations" do
     it "should raise an exception" do
       @incorrect_debit = { :value => "37.90", :id_proprio => id, :forma => "DebitoBancario", :instituicao => "BancoDoBrasil" }
-      lambda { MoIP.checkout(@incorrect_debit) }.should raise_error(StandardError, "É obrigatório passar as informações do pagador")
+      lambda { MoIP::Client.checkout(@incorrect_debit) }.should raise_error(StandardError, "É obrigatório passar as informações do pagador")
     end
   end
 
   context "make a credit card checkout" do
     it "should have status Sucesso" do
-      MoIP.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{ "ID"=>Time.now.strftime("%y%m%d%H%M%S"), "Status"=>"Sucesso", "Token" => "T2N0L0X8E0S71217U2H3W1T4F4S4G4K731D010V0S0V0S080M010E0Q082X2" }})
-      response = MoIP.checkout(@credit)
+      MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{ "ID"=>Time.now.strftime("%y%m%d%H%M%S"), "Status"=>"Sucesso", "Token" => "T2N0L0X8E0S71217U2H3W1T4F4S4G4K731D010V0S0V0S080M010E0Q082X2" }})
+      response = MoIP::Client.checkout(@credit)
       response["Status"].should == "Sucesso"
     end
   end
@@ -73,49 +73,49 @@ describe "Make payments with the MoIP API" do
   context "make a credit card checkout without pass card informations" do
     it "should have status Falha" do
       @incorrect_credit = { :value => "8.90", :id_proprio => id, :forma => "CartaoCredito", :pagador => @pagador }
-      MoIP.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"Pagamento direto não é possível com a instituição de pagamento enviada" }})
-      lambda { MoIP.checkout(@incorrect_credit) }.should raise_error(StandardError, "Pagamento direto não é possível com a instituição de pagamento enviada")
+      MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"Pagamento direto não é possível com a instituição de pagamento enviada" }})
+      lambda { MoIP::Client.checkout(@incorrect_credit) }.should raise_error(StandardError, "Pagamento direto não é possível com a instituição de pagamento enviada")
     end
   end
 
   context "in error scenario" do
     it "should raise an exception if response is nil" do
-      MoIP.stub!(:post).and_return(nil)
-      lambda { MoIP.checkout(@billet) }.should raise_error(StandardError, "Ocorreu um erro ao chamar o webservice")
+      MoIP::Client.stub!(:post).and_return(nil)
+      lambda { MoIP::Client.checkout(@billet) }.should raise_error(StandardError, "Ocorreu um erro ao chamar o webservice")
     end
 
     it "should raise an exception if status is fail" do
-      MoIP.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"O status da resposta é Falha" }})
-      lambda { MoIP.checkout(@billet) }.should raise_error(StandardError, "O status da resposta é Falha")
+      MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"O status da resposta é Falha" }})
+      lambda { MoIP::Client.checkout(@billet) }.should raise_error(StandardError, "O status da resposta é Falha")
     end
   end
 
   context "query a transaction token" do
     it "should retrieve the transaction" do
-      MoIP.stub!(:get).and_return("ns1:ConsultarTokenResponse"=>{ "RespostaConsultar"=>{"Status"=>"Sucesso", "ID"=>"201010291031001210000000046760" }})
-      response = MoIP.query(token)
+      MoIP::Client.stub!(:get).and_return("ns1:ConsultarTokenResponse"=>{ "RespostaConsultar"=>{"Status"=>"Sucesso", "ID"=>"201010291031001210000000046760" }})
+      response = MoIP::Client.query(token)
       response["Status"].should == "Sucesso"
     end
   end
 
   context "query a transaction token in a error scenario" do
     it "should retrieve status Falha" do
-      MoIP.stub!(:get).and_return("ns1:ConsultarTokenResponse"=>{ "RespostaConsultar"=>{"Status"=>"Falha", "Erro"=>"Instrução não encontrada", "ID"=>"201010291102522860000000046768"}})
-      lambda { MoIP.query("000000000000000000000000000000000000000000000000000000000000") }.should raise_error(StandardError, "Instrução não encontrada")
+      MoIP::Client.stub!(:get).and_return("ns1:ConsultarTokenResponse"=>{ "RespostaConsultar"=>{"Status"=>"Falha", "Erro"=>"Instrução não encontrada", "ID"=>"201010291102522860000000046768"}})
+      lambda { MoIP::Client.query("000000000000000000000000000000000000000000000000000000000000") }.should raise_error(StandardError, "Instrução não encontrada")
     end
   end
 
   context "build the MoIP URL" do
     it "should build the correct URL" do
-      MoIP.moip_page(token).should == "https://desenvolvedor.moip.com.br/sandbox/Instrucao.do?token=#{token}"
+      MoIP::Client.moip_page(token).should == "https://desenvolvedor.moip.com.br/sandbox/Instrucao.do?token=#{token}"
     end
 
     it "should raise an error if the token is not informed" do
-      lambda { MoIP.moip_page("").should raise_error(ArgumentError, "É necessário informar um token para retornar os dados da transação") }
+      lambda { MoIP::Client.moip_page("").should raise_error(ArgumentError, "É necessário informar um token para retornar os dados da transação") }
     end
 
     it "should raise an error if nil is passed as the token" do
-      lambda { MoIP.moip_page(nil).should raise_error(ArgumentError, "É necessário informar um token para retornar os dados da transação") }
+      lambda { MoIP::Client.moip_page(nil).should raise_error(ArgumentError, "É necessário informar um token para retornar os dados da transação") }
     end
   end
 
@@ -126,7 +126,7 @@ describe "Make payments with the MoIP API" do
 
     it "should return a hash with the params extracted from NASP" do
       response = { :transaction_id => "Pag62", :amount => "8.90", :status => "printed", :code => "001", :payment_type => "BoletoBancario", :email => "presidente@planalto.gov.br" }
-      MoIP.notification(@params).should == response
+      MoIP::Client.notification(@params).should == response
     end
 
     it "should return valid status based on status code" do
