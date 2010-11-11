@@ -4,9 +4,9 @@ require 'active_support/core_ext/module/attribute_accessors'
 require 'httparty'
 require "nokogiri"
 
-require "direct_payment"
-
 module MoIP
+  autoload :DirectPayment, 'moip/direct_payment'
+
   include HTTParty
 
   # URI para acessar o serviço
