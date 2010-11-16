@@ -43,14 +43,14 @@ describe "Make payments with the MoIP API" do
       deprecations.any? {|w| w =~ /MoIP.checkout has been deprecated/ }.should be_true
     end
 
-    context "when is a billet checkout" do
+    context "when it is a billet checkout" do
       it "should have status 'Sucesso'" do
         response = MoIP::Client.checkout(@billet)
         response["Status"].should == "Sucesso"
       end
     end
 
-    context "when is a debit checkout" do
+    context "when it is a debit checkout" do
       it "should have status 'Sucesso' with valid arguments" do
         response = MoIP::Client.checkout(@debit)
         response["Status"].should == "Sucesso"
@@ -64,19 +64,19 @@ describe "Make payments with the MoIP API" do
         lambda { MoIP::Client.checkout(@incorrect_debit) }.should raise_error(StandardError, "Pagamento direto não é possível com a instituição de pagamento enviada")
       end
 
-      it "should raise an exception if payer isformations is not passed" do
+      it "should raise an exception if payer informations were not passed" do
         @incorrect_debit = { :value => "37.90", :id_proprio => id, :forma => "DebitoBancario", :instituicao => "BancoDoBrasil" }
         lambda { MoIP::Client.checkout(@incorrect_debit) }.should raise_error(StandardError, "É obrigatório passar as informações do pagador")
       end
     end
 
-    context "when is a credit card checkout" do
+    context "when it is a credit card checkout" do
       it "should have status 'Sucesso' with valid arguments" do
         response = MoIP::Client.checkout(@credit)
         response["Status"].should == "Sucesso"
       end
 
-      it "should have status 'Falha' when the card informations is not passed as argument" do
+      it "should have status 'Falha' when the card informations were not passed as argument" do
         @incorrect_credit = { :value => "8.90", :id_proprio => id, :forma => "CartaoCredito", :pagador => @pagador }
         MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"Pagamento direto não é possível com a instituição de pagamento enviada" }})
         lambda { MoIP::Client.checkout(@incorrect_credit) }.should raise_error(StandardError, "Pagamento direto não é possível com a instituição de pagamento enviada")
