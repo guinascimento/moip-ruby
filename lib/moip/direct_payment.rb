@@ -9,17 +9,18 @@ module MoIP
 
       # Cria uma instrução de pagamento direto
       def body(attributes = {})
+        raise(StandardError, "É necessário informar a razão do pagamento") if attributes[:razao].nil?
+        raise(StandardError, "É obrigatório passar as informações do pagador") if attributes[:pagador].nil?
+
         builder = Nokogiri::XML::Builder.new(:encoding => "UTF-8") do |xml|
 
           # Identificador do tipo de instrução
           xml.EnviarInstrucao {
             xml.InstrucaoUnica {
-              # Dados da transação
-              
-              raise(StandardError,"É necessário informar a razão do pagamento") if attributes[:razao].nil?
 
+              # Dados da transação
               xml.Razao {
-                xml.text attributes[:razao] 
+                xml.text attributes[:razao]
               }
               xml.Valores {
                 xml.Valor(:moeda => "BRL") {
@@ -48,7 +49,6 @@ module MoIP
                   xml.Instituicao {
                     xml.text attributes[:instituicao]
                   }
-
                   xml.CartaoCredito {
                     xml.Numero {
                       xml.text attributes[:numero]
@@ -86,7 +86,6 @@ module MoIP
               }
 
               # Dados do pagador
-              raise(StandardError, "É obrigatório passar as informações do pagador") if attributes[:pagador].nil?
               xml.Pagador {
                 xml.Nome { xml.text attributes[:pagador][:nome] }
                 xml.LoginMoIP { xml.text attributes[:pagador][:login_moip] }
@@ -126,11 +125,12 @@ module MoIP
             }
           }
         end
+
         builder.to_xml
       end
 
     end
 
   end
-  
+
 end
