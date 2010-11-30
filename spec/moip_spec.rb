@@ -26,9 +26,10 @@ describe "Make payments with the MoIP API" do
                 :cep => "70100-000",
                 :tel_fixo => "(61)3211-1221" }
 
-    @billet = { :value => "8.90", :id_proprio => id, :forma => "BoletoBancario", :pagador => @pagador }
-    @debit = { :value => "8.90", :id_proprio => id, :forma => "DebitoBancario", :instituicao => "BancoDoBrasil", :pagador => @pagador }
-    @credit = { :value => "8.90", :id_proprio => id, :forma => "CartaoCredito", :instituicao => "AmericanExpress", :numero => "345678901234564", :expiracao => "08/11", :codigo_seguranca => "1234", :nome => "João Silva", :identidade => "134.277.017.00", :telefone => "(21)9208-0547", :data_nascimento => "25/10/1980", :parcelas => "2", :recebimento => "AVista", :pagador => @pagador }
+    @billet_without_razao = { :value => "8.90", :id_proprio => id, :forma => "BoletoBancario", :pagador => @pagador }
+    @billet = { :value => "8.90", :id_proprio => id, :forma => "BoletoBancario", :pagador => @pagador ,:razao=> "Pagamento" }
+    @debit = { :value => "8.90", :id_proprio => id, :forma => "DebitoBancario", :instituicao => "BancoDoBrasil", :pagador => @pagador, :razao => "Pagamento"}
+    @credit = { :value => "8.90", :id_proprio => id, :forma => "CartaoCredito", :instituicao => "AmericanExpress", :numero => "345678901234564", :expiracao => "08/11", :codigo_seguranca => "1234", :nome => "João Silva", :identidade => "134.277.017.00", :telefone => "(21)9208-0547", :data_nascimento => "25/10/1980", :parcelas => "2", :recebimento => "AVista", :pagador => @pagador, :razao => "Pagamento"}
   end
 
   context "checkout" do
@@ -44,6 +45,10 @@ describe "Make payments with the MoIP API" do
     end
 
     context "when it is a billet checkout" do
+      it "should raise an exception when razao parameter is not passed" do
+        lambda { MoIP::Client.checkout(@billet_without_razao) }.should raise_error(StandardError, "É necessário informar a razão do pagamento") 
+      end
+      
       it "should have status 'Sucesso'" do
         response = MoIP::Client.checkout(@billet)
         response["Status"].should == "Sucesso"
@@ -57,7 +62,7 @@ describe "Make payments with the MoIP API" do
       end
 
       it "should have status 'Falha' when a instituition is not passed as argument" do
-        @incorrect_debit = { :value => "37.90", :id_proprio => id, :forma => "DebitoBancario", :pagador => @pagador }
+        @incorrect_debit = { :value => "37.90", :id_proprio => id, :forma => "DebitoBancario", :pagador => @pagador ,:razao => "Pagamento"}
 
         MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"Pagamento direto não é possível com a instituição de pagamento enviada" }})
 
@@ -65,7 +70,7 @@ describe "Make payments with the MoIP API" do
       end
 
       it "should raise an exception if payer informations were not passed" do
-        @incorrect_debit = { :value => "37.90", :id_proprio => id, :forma => "DebitoBancario", :instituicao => "BancoDoBrasil" }
+        @incorrect_debit = { :value => "37.90", :id_proprio => id, :forma => "DebitoBancario", :instituicao => "BancoDoBrasil", :razao => "Pagamento" }
         lambda { MoIP::Client.checkout(@incorrect_debit) }.should raise_error(StandardError, "É obrigatório passar as informações do pagador")
       end
     end
@@ -77,7 +82,7 @@ describe "Make payments with the MoIP API" do
       end
 
       it "should have status 'Falha' when the card informations were not passed as argument" do
-        @incorrect_credit = { :value => "8.90", :id_proprio => id, :forma => "CartaoCredito", :pagador => @pagador }
+        @incorrect_credit = { :value => "8.90", :id_proprio => id, :forma => "CartaoCredito", :pagador => @pagador ,:razao => "Pagamento"}
         MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>{ "Resposta"=>{"Status"=>"Falha", "Erro"=>"Pagamento direto não é possível com a instituição de pagamento enviada" }})
         lambda { MoIP::Client.checkout(@incorrect_credit) }.should raise_error(StandardError, "Pagamento direto não é possível com a instituição de pagamento enviada")
       end

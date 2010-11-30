@@ -15,8 +15,11 @@ module MoIP
           xml.EnviarInstrucao {
             xml.InstrucaoUnica {
               # Dados da transação
+              
+              raise(StandardError,"É necessário informar a razão do pagamento") if attributes[:razao].nil?
+
               xml.Razao {
-                xml.text "Pagamento"
+                xml.text attributes[:razao] 
               }
               xml.Valores {
                 xml.Valor(:moeda => "BRL") {
