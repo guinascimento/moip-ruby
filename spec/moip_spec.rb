@@ -1,6 +1,8 @@
 # encoding: utf-8
 require "moip"
 
+require "digest/sha1"
+
 describe "Make payments with the MoIP API" do
 
   before :all do
