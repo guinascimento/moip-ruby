@@ -71,6 +71,12 @@ Após realizar os testes na SandBox, você poderá fazer a mudança para o ambie
       redirect_to MoIP::Client.moip_page(response["Token"])
     end
 
+###Erros
+
+ - MoIP::MissingPaymentTypeError - Quando falta a razão do pagamento na requisição.
+ - MoIP::MissingPayerError - Quando falta as informações do pagador na requisição.
+ - MoIP::WebServerResponseError - Quando há algum erro ao se enviar a solicitação ao servidor. Normalmente a razão do erro vem como resposta da mensagem.
+
 ## Futuras implementações
 
 * Pagamento Simples
