@@ -71,7 +71,7 @@ describe "Make payments with the MoIP API" do
         error = "É necessário informar a razão do pagamento"
 
         lambda { MoIP::Client.checkout(@billet_without_razao) }.should
-        raise_error(StandardError,error)
+        raise_error(MoIP::MissingPaymentTypeError,error)
       end
 
       it "should have status 'Sucesso'" do
@@ -103,7 +103,7 @@ describe "Make payments with the MoIP API" do
                             })
         error = "Pagamento direto não é possível com a instituição de pagamento enviada"
         lambda { MoIP::Client.checkout(@incorrect_debit) }.should
-            raise_error(StandardError, error)
+            raise_error(MoIP::WebServerResponseError, error)
       end
 
       it "should raise an exception if payer informations were not passed" do
@@ -114,7 +114,7 @@ describe "Make payments with the MoIP API" do
                            }
 
         lambda { MoIP::Client.checkout(@incorrect_debit) }.should
-            raise_error(StandardError, "É obrigatório passar as informações do pagador")
+            raise_error(MoIP::MissingPayerError, "É obrigatório passar as informações do pagador")
       end
     end
 
@@ -143,7 +143,7 @@ describe "Make payments with the MoIP API" do
 
         error = "Pagamento direto não é possível com a instituição de pagamento enviada"
         lambda { MoIP::Client.checkout(@incorrect_credit) }.should
-            raise_error(StandardError, error)
+            raise_error(MoIP::WebServerResponseError, error)
       end
     end
 

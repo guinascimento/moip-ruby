@@ -2,6 +2,9 @@
 require 'httparty'
 
 module MoIP
+  class WebServerResponseError < StandardError ; end
+  class MissingTokenError < StandardError ; end
+
   class Client
     include HTTParty
 
@@ -26,7 +29,7 @@ module MoIP
 
       # Retorna a URL de acesso ao MoIP
       def moip_page(token)
-        raise(StandardError, "É necessário informar um token para retornar os dados da transação") if token.nil?
+        raise(MissingTokenError, "É necessário informar um token para retornar os dados da transação") if token.nil?
         "#{MoIP.uri}/Instrucao.do?token=#{token}"
       end
 
@@ -46,12 +49,12 @@ module MoIP
 
       def peform_action!(action_name, url, options = {})
         response = self.send(action_name, url, options)
-        raise(StandardError, "Ocorreu um erro ao chamar o webservice") if response.nil?
+        raise(WebServerResponseError, "Ocorreu um erro ao chamar o webservice") if response.nil?
         response
       end
 
       def get_response!(data)
-        raise(StandardError, data["Erro"]) if data["Status"] == "Falha"
+        raise(WebServerResponseError, data["Erro"]) if data["Status"] == "Falha"
         data
       end
     end

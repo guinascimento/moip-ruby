@@ -3,14 +3,17 @@ require "nokogiri"
 
 module MoIP
 
+  class MissingPaymentTypeError < StandardError ; end
+  class MissingPayerError < StandardError ; end
+
   class DirectPayment
 
     class << self
 
       # Cria uma instrução de pagamento direto
       def body(attributes = {})
-        raise(StandardError, "É necessário informar a razão do pagamento") if attributes[:razao].nil?
-        raise(StandardError, "É obrigatório passar as informações do pagador") if attributes[:pagador].nil?
+        raise(MissinPaymentTypeError, "É necessário informar a razão do pagamento") if attributes[:razao].nil?
+        raise(MissingPayerError, "É obrigatório passar as informações do pagador") if attributes[:pagador].nil?
 
         builder = Nokogiri::XML::Builder.new(:encoding => "UTF-8") do |xml|
 
