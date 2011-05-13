@@ -70,8 +70,7 @@ describe "Make payments with the MoIP API" do
       it "should raise an exception when razao parameter is not passed" do
         error = "É necessário informar a razão do pagamento"
 
-        lambda { MoIP::Client.checkout(@billet_without_razao) }.should
-        raise_error(MoIP::MissingPaymentTypeError,error)
+        lambda { MoIP::Client.checkout(@billet_without_razao) }.should raise_error(MoIP::MissingPaymentTypeError,error)
       end
 
       it "should have status 'Sucesso'" do
@@ -93,8 +92,7 @@ describe "Make payments with the MoIP API" do
 
         error = "Pagamento direto não é possível com a instituição de pagamento enviada"
 
-        MoIP::Client.stub!(:post)
-            .and_return("ns1:EnviarInstrucaoUnicaResponse"=>
+        MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>
                             { "Resposta"=>
                                 {
                                  "Status"=>"Falha",
@@ -131,8 +129,7 @@ describe "Make payments with the MoIP API" do
                             }
 
         error = "Pagamento direto não é possível com a instituição de pagamento enviada"
-        MoIP::Client.stub!(:post)
-            .and_return("ns1:EnviarInstrucaoUnicaResponse"=>
+        MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>
                         {
                         "Resposta"=>
                             {
@@ -155,8 +152,7 @@ describe "Make payments with the MoIP API" do
       end
 
       it "should raise an exception if status is fail" do
-        MoIP::Client.stub!(:post)
-            .and_return("ns1:EnviarInstrucaoUnicaResponse"=>
+        MoIP::Client.stub!(:post).and_return("ns1:EnviarInstrucaoUnicaResponse"=>
                         { "Resposta"=>
                             {"Status"=>"Falha",
                              "Erro"=>"O status da resposta é Falha"
@@ -170,8 +166,7 @@ describe "Make payments with the MoIP API" do
 
   context "query a transaction token" do
     before(:each) do
-      MoIP::Client.stub!(:get)
-        .and_return("ns1:ConsultarTokenResponse"=>
+      MoIP::Client.stub!(:get).and_return("ns1:ConsultarTokenResponse"=>
                     { "RespostaConsultar"=>
                         {"Status"=>"Sucesso",
                          "ID"=>"201010291031001210000000046760"
@@ -193,8 +188,7 @@ describe "Make payments with the MoIP API" do
 
     context "in a error scenario" do
       it "should retrieve status 'Falha'" do
-        MoIP::Client.stub!(:get)
-            .and_return("ns1:ConsultarTokenResponse"=>
+        MoIP::Client.stub!(:get).and_return("ns1:ConsultarTokenResponse"=>
                         { "RespostaConsultar"=>
                             {"Status"=>"Falha",
                              "Erro"=>"Instrução não encontrada",
