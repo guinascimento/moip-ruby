@@ -3,8 +3,37 @@ require "nokogiri"
 
 module MoIP
 
-  class MissingPaymentTypeError < StandardError ; end
-  class MissingPayerError < StandardError ; end
+  class ValidationError < StandardError; end
+
+  class MissingPaymentTypeError < ValidationError; end
+  class MissingPayerError < ValidationError; end
+  class InvalidInstitution < ValidationError; end    
+  class InvalidValue < ValidationError; end
+
+  # Baseado em http://labs.moip.com.br/pdfs/Integra%C3%A7%C3%A3o%20API%20-%20Autorizar%20e%20Cancelar%20Pagamentos.pdf
+  CodigoErro = 0..999
+  CodigoEstado = %w{AC AL AM AP BA CE DF ES GO MA MG MS MT PA PB PE PI PR RJ RN RO RR RS SC SE SP TO}
+  CodigoMoeda = "BRL"
+  CodigoPaís = "BRA"
+  Destino = %w{Nenhum MesmoCobranca AInformar PreEstabelecido}
+  InstituicaoPagamento = %w{MoIP Visa AmericanExpress Mastercard Diners BancoDoBrasil Bradesco Itau BancoReal Unibanco Aura Hipercard Paggo Banrisul}
+  FormaPagamento = %w{CarteiraMoIP CartaoCredito CartaoDebito DebitoBancario FinanciamentoBancario BoletoBancario}
+  FormaRestricao = %w{Contador Valor}
+  PapelIndividuo = %w{Integrador Recebedor Comissionado Pagado}
+  OpcaoDisponivel = %w{Sim Não PagadorEscolhe}
+  Parcelador = %w{Nenhum Administradora MoIP Recebedor}
+  StatusLembrete = %w{Enviado Realizado EmAndamento Aguardando Falha}
+  StatusPagamento = %w{Concluido EmAnalise Autorizado Iniciado Cancelado BoletoImpresso Estornado}
+  TipoDias = %w{Corridos Uteis}
+  TipoDuracao = %w{Minutos Horas Dias Semanas Meses Ano}
+  TipoFrete = %w{Proprio Correio}
+  TipoIdentidade = %w{CPF CNPJ}
+  TipoInstrucao = %w{Unico Recorrente PrePago PosPago Remessa}
+  TipoLembrete = %w{Email SMS}
+  TipoPeriodicidade = %w{Anual Mensal Semanal Diaria}
+  TipoRecebimento = %w{AVista Parcelado}
+  TipoRestricao = %w{Autorizacao Pagamento}
+  TipoStatus = %w{Sucesso Falha}
 
   class DirectPayment
 
@@ -12,8 +41,12 @@ module MoIP
 
       # Cria uma instrução de pagamento direto
       def body(attributes = {})
+
+#raise "#{attributes[:valor]}--#{attributes[:valor].to_f}"
         raise(MissingPaymentTypeError, "É necessário informar a razão do pagamento") if attributes[:razao].nil?
         raise(MissingPayerError, "É obrigatório passar as informações do pagador") if attributes[:pagador].nil?
+        raise(InvalidValue, "Valor deve ser maior que zero.") if attributes[:valor].to_f <= 0.0
+        raise(InvalidInstitution, "A instituição #{attributes[:instituicao]} é inválida. Escolha uma destas: #{InstituicaoPagamento.join(', ')}") if attributes[:forma] == "CartaoCredito" && !InstituicaoPagamento.include?(attributes[:instituicao])
 
         builder = Nokogiri::XML::Builder.new(:encoding => "UTF-8") do |xml|
 
