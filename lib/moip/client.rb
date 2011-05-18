@@ -19,6 +19,7 @@ module MoIP
       def checkout(attributes = {})
         #raise DirectPayment.body(attributes).inspect
         full_data = peform_action!(:post, 'EnviarInstrucao/Unica', :body => DirectPayment.body(attributes))
+       raise full_data.inspect
         get_response!(full_data["ns1:EnviarInstrucaoUnicaResponse"]["Resposta"])
       end
 
