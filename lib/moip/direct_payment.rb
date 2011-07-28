@@ -9,6 +9,7 @@ module MoIP
   class MissingPayerError < ValidationError; end
   class InvalidInstitution < ValidationError; end    
   class InvalidValue < ValidationError; end
+  class InvalidPhone < ValidationError; end
 
   # Baseado em http://labs.moip.com.br/pdfs/Integra%C3%A7%C3%A3o%20API%20-%20Autorizar%20e%20Cancelar%20Pagamentos.pdf
   CodigoErro = 0..999
@@ -46,6 +47,8 @@ module MoIP
         raise(MissingPaymentTypeError, "É necessário informar a razão do pagamento") if attributes[:razao].nil?
         raise(MissingPayerError, "É obrigatório passar as informações do pagador") if attributes[:pagador].nil?
         raise(InvalidValue, "Valor deve ser maior que zero.") if attributes[:valor].to_f <= 0.0
+        raise(InvalidPhone, "Telefone deve ter o formato (99) 99999999.") if attributes[:pagador][:tel_fixo] !~ /\(\d{2}\) ?\d{8,9}/
+
         raise(InvalidInstitution, "A instituição #{attributes[:instituicao]} é inválida. Escolha uma destas: #{InstituicaoPagamento.join(', ')}") if attributes[:forma] == "CartaoCredito" && !InstituicaoPagamento.include?(attributes[:instituicao])
 
         builder = Nokogiri::XML::Builder.new(:encoding => "UTF-8") do |xml|
