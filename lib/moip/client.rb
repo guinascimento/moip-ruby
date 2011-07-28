@@ -84,7 +84,9 @@ module MoIP
       end
 
       def get_response!(data)
-        raise(WebServerResponseError, data["Erro"]) if data["Status"] == "Falha"
+        # raise data.inspect
+        err = data["Erro"].is_a?(Array) ? data["Erro"].join(", ") : data["Erro"]
+        raise(WebServerResponseError, err) if data["Status"] == "Falha"
         data
       end
     end

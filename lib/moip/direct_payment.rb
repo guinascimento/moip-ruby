@@ -45,11 +45,11 @@ module MoIP
 
 #raise "#{attributes[:valor]}--#{attributes[:valor].to_f}"
         raise(MissingPaymentTypeError, "É necessário informar a razão do pagamento") if attributes[:razao].nil?
-        raise(MissingPayerError, "É obrigatório passar as informações do pagador") if attributes[:pagador].nil?
+        raise(MissingPayerError, "É obrigatório passar as informarções do pagador") if attributes[:pagador].nil?
         raise(InvalidValue, "Valor deve ser maior que zero.") if attributes[:valor].to_f <= 0.0
         raise(InvalidPhone, "Telefone deve ter o formato (99) 99999999.") if attributes[:pagador][:tel_fixo] !~ /\(\d{2}\) ?\d{8,9}/
 
-        raise(InvalidInstitution, "A instituição #{attributes[:instituicao]} é inválida. Escolha uma destas: #{InstituicaoPagamento.join(', ')}") if attributes[:forma] == "CartaoCredito" && !InstituicaoPagamento.include?(attributes[:instituicao])
+        raise(InvalidInstitution, "A instituição #{attributes[:instituicao]} é inválida. Escolha uma destas: #{InstituicaoPagamento.join(', ')}") if  ["CartaoCredito", "DebitoBancario"].include?(attributes[:forma]) && !InstituicaoPagamento.include?(attributes[:instituicao])
 
         builder = Nokogiri::XML::Builder.new(:encoding => "UTF-8") do |xml|
 
@@ -77,7 +77,7 @@ module MoIP
                 }
 
                 # Débito Bancário
-                if attributes[:forma] == "DebitoBancario"
+                if ["DebitoBancario"].include?(attributes[:forma])
                   xml.Instituicao {
                     xml.text attributes[:instituicao]
                   }
