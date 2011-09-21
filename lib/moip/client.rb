@@ -38,7 +38,10 @@ module MoIP
 
       # Envia uma instrução para pagamento único
       def checkout(attributes = {})
-        full_data = peform_action!(:post, 'EnviarInstrucao/Unica', :body => DirectPayment.body(attributes))
+        body = DirectPayment.body(attributes)
+        puts "************ XML ************"
+        puts body
+        full_data = peform_action!(:post, 'EnviarInstrucao/Unica', :body => body)
        # raise full_data.inspect
         get_response!(full_data["ns1:EnviarInstrucaoUnicaResponse"]["Resposta"])
       end
