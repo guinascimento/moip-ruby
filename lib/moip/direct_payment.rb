@@ -3,19 +3,11 @@ require "nokogiri"
 
 module MoIP
 
-  class ValidationError < StandardError; end
-
-  class MissingPaymentTypeError < ValidationError; end
-  class MissingPayerError < ValidationError; end
-  class InvalidInstitution < ValidationError; end    
-  class InvalidValue < ValidationError; end
-  class InvalidPhone < ValidationError; end
-
   # Baseado em http://labs.moip.com.br/pdfs/Integra%C3%A7%C3%A3o%20API%20-%20Autorizar%20e%20Cancelar%20Pagamentos.pdf
   CodigoErro = 0..999
   CodigoEstado = %w{AC AL AM AP BA CE DF ES GO MA MG MS MT PA PB PE PI PR RJ RN RO RR RS SC SE SP TO}
   CodigoMoeda = "BRL"
-  CodigoPaís = "BRA"
+  CodigoPais = "BRA"
   Destino = %w{Nenhum MesmoCobranca AInformar PreEstabelecido}
   InstituicaoPagamento = %w{MoIP Visa AmericanExpress Mastercard Diners BancoDoBrasil Bradesco Itau BancoReal Unibanco Aura Hipercard Paggo Banrisul}
   FormaPagamento = %w{CarteiraMoIP CartaoCredito CartaoDebito DebitoBancario FinanciamentoBancario BoletoBancario}
@@ -35,6 +27,9 @@ module MoIP
   TipoRecebimento = %w{AVista Parcelado}
   TipoRestricao = %w{Autorizacao Pagamento}
   TipoStatus = %w{Sucesso Falha}
+  
+  #
+  TiposComInstituicao = %w{CartaoCredito CartaoCredito DebitoBancario}
 
   class DirectPayment
 
@@ -46,10 +41,19 @@ module MoIP
 #raise "#{attributes[:valor]}--#{attributes[:valor].to_f}"
         raise(MissingPaymentTypeError, "É necessário informar a razão do pagamento") if attributes[:razao].nil?
         raise(MissingPayerError, "É obrigatório passar as informarções do pagador") if attributes[:pagador].nil?
-        raise(InvalidValue, "Valor deve ser maior que zero.") if attributes[:valor].to_f <= 0.0
-        raise(InvalidPhone, "Telefone deve ter o formato (99) 99999999.") if attributes[:pagador][:tel_fixo] !~ /\(\d{2}\) ?\d{8,9}/
 
-        raise(InvalidInstitution, "A instituição #{attributes[:instituicao]} é inválida. Escolha uma destas: #{InstituicaoPagamento.join(', ')}") if  ["CartaoCredito", "DebitoBancario"].include?(attributes[:forma]) && !InstituicaoPagamento.include?(attributes[:instituicao])
+        raise(InvalidValue, "Valor deve ser maior que zero.") if attributes[:valor].to_f <= 0.0
+        raise(InvalidPhone, "Telefone deve ter o formato (99)9999-9999.") if attributes[:pagador][:tel_fixo] !~ /\(\d{2}\)?\d{4}-\d{4}/
+        raise(InvalidCellphone, "Telefone celular deve ter o formato (99)9999-9999.") if attributes[:pagador][:tel_cel] !~ /\(\d{2}\)?\d{4}-\d{4}/
+
+        raise(MissingBirthdate, "É obrigatório passar as informarções do pagador") if TiposComInstituicao.include?(attributes[:forma]) && attributes[:data_nascimento].nil?
+
+        raise(InvalidExpiry, "Data de expiração deve ter o formato 01-00 até 12-99.") if TiposComInstituicao.include?(attributes[:forma]) && attributes[:expiracao] !~ /(1[0-2]|0\d)\/\d{2}/
+
+
+        raise(InvalidReceiving, "Recebimento é inválido. Escolha um destes: #{TipoRecebimento.join(', ')}") if !TipoRecebimento.include?(attributes[:recebimento]) && TiposComInstituicao.include?(attributes[:forma])
+
+        raise(InvalidInstitution, "A instituição #{attributes[:instituicao]} é inválida. Escolha uma destas: #{InstituicaoPagamento.join(', ')}") if  TiposComInstituicao.include?(attributes[:forma]) && !InstituicaoPagamento.include?(attributes[:instituicao])
 
         builder = Nokogiri::XML::Builder.new(:encoding => "UTF-8") do |xml|
 
@@ -131,7 +135,7 @@ module MoIP
                 xml.Email { xml.text attributes[:pagador][:email] }
                 xml.TelefoneCelular { xml.text attributes[:pagador][:tel_cel] }
                 xml.Apelido { xml.text attributes[:pagador][:apelido] }
-                xml.Identidade { xml.text attributes[:pagador][:identidade] }
+                xml.Identidade(:Tipo => "CPF") { xml.text attributes[:pagador][:identidade] }
                 xml.EnderecoCobranca {
                   xml.Logradouro { xml.text attributes[:pagador][:logradouro] }
                   xml.Numero { xml.text attributes[:pagador][:numero] }

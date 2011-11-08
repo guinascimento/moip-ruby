@@ -1,7 +1,9 @@
 # encoding: utf-8
 require "moip"
-
 require "digest/sha1"
+
+MoIP::Client
+MoIP::DirectPayment
 
 describe "Make payments with the MoIP API" do
 
@@ -113,12 +115,30 @@ describe "Make payments with the MoIP API" do
         config.key = 'key'
       end
     end
+    it "should raise invalid phone" do
+      @data = @credit.merge({:pagador => {:tel_fixo => 'InvalidPhone', :tel_cel => "(61)9999-9999"}})
+      lambda { MoIP::Client.checkout(@data) }.should raise_error(MoIP::InvalidPhone)
+    end
+    it "should raise invalid cellphone" do
+      @data = @credit.merge({:pagador => {:tel_cel => 'InvalidCellphone', :tel_fixo => "(61)9999-9999"}})
+      lambda { MoIP::Client.checkout(@data) }.should raise_error(MoIP::InvalidCellphone)
+    end
+    it "should raise invalid expiry" do
+      @data = @credit.merge({:expiracao => 'InvalidExpiry'})
+      lambda { MoIP::Client.checkout(@data) }.should raise_error(MoIP::InvalidExpiry)
+    end
+    it "should raise missing birthdate" do
+      @data = @credit.merge({:data_nascimento => nil})
+      lambda { MoIP::Client.checkout(@data) }.should raise_error(MoIP::MissingBirthdate)
+    end
     it "should raise invalid institution error" do
       @data = @credit.merge({:instituicao => 'InvalidInstitution'})
-      #raise @credit.inspect
       lambda { MoIP::Client.checkout(@data) }.should raise_error(MoIP::InvalidInstitution)
     end
-
+    it "should raise invalid receiving error" do
+      @data = @credit.merge({:recebimento => 'InvalidReceiving'})
+      lambda { MoIP::Client.checkout(@data) }.should raise_error(MoIP::InvalidReceiving)
+    end
     it "should raise invalid value error if 0" do
       @credit[:valor] = 0
       lambda { MoIP::Client.checkout(@credit) }.should raise_error(MoIP::InvalidValue)
