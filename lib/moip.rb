@@ -4,6 +4,20 @@ require 'active_support/core_ext/module/attribute_accessors'
 require 'active_support/deprecation'
 
 module MoIP
+
+  class ValidationError < StandardError; end
+
+  class MissingPaymentTypeError < ValidationError; end
+  class MissingPayerError < ValidationError; end
+  class MissingBirthdate < ValidationError; end
+
+  class InvalidCellphone < ValidationError; end
+  class InvalidExpiry < ValidationError; end
+  class InvalidInstitution < ValidationError; end    
+  class InvalidPhone < ValidationError; end
+  class InvalidReceiving < ValidationError; end
+  class InvalidValue < ValidationError; end
+
   autoload :DirectPayment, 'moip/direct_payment'
   autoload :Client,        'moip/client'
 
