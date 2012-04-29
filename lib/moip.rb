@@ -23,6 +23,7 @@ module MoIP
       yield self
     end
 
+    # Status de retorno
     STATUS = { 1 => "authorized", 2 => "started", 3 => "printed", 4 => "completed", 5 => "canceled", 6 => "analysing" }
 
     base_uri "#{self.uri}/ws/alpha"
