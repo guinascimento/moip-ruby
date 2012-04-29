@@ -13,7 +13,7 @@ begin
     gem.authors = ["Guilherme Nascimento"]
     gem.add_development_dependency "rspec", "~> 2.1.0"
     gem.add_dependency "nokogiri", "~> 1.4.3"
-    gem.add_dependency "httparty", "~> 0.6.1"
+    gem.add_dependency "httparty", "~> 0.8.1"
     gem.add_dependency "activesupport", '>= 2.3.2'
   end
   Jeweler::GemcutterTasks.new
