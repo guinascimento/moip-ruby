@@ -7,7 +7,7 @@ require 'rspec/core/rake_task'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "moip"
+    gem.name = "moip-ruby"
     gem.summary = "Gem para utilização da API MoIP"
     gem.description = "Gem para utilização da API MoIP"
     gem.email = "guilherme.ruby@gmail.com"
