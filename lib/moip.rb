@@ -29,7 +29,6 @@ module MoIP
     basic_auth self.token, self.key
 
     class << self
-
       # Envia uma instrução para pagamento único
       def checkout(attributes = {})
         full_data = peform_action!(:post, 'EnviarInstrucao/Unica', :body => DirectPayment.body(attributes))
@@ -74,7 +73,5 @@ module MoIP
         raise(StandardError, data["Erro"]) if data["Status"] == "Falha"
         data
       end
-
     end
-
 end
