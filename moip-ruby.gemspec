@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{moip-ruby}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Guilherme Nascimento"]
@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
     "lib/moip.rb",
     "lib/moip/client.rb",
     "lib/moip/direct_payment.rb",
-    "moip.gemspec",
+    "moip-ruby.gemspec",
     "spec/moip_spec.rb"
   ]
   s.homepage = %q{http://github.com/guinascimento/moip}
@@ -43,11 +43,13 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<moip-ruby>, [">= 0"])
       s.add_development_dependency(%q<rspec>, ["~> 2.1.0"])
       s.add_development_dependency(%q<rspec>, ["~> 2.1.0"])
+      s.add_development_dependency(%q<rspec>, ["~> 2.1.0"])
       s.add_runtime_dependency(%q<nokogiri>, ["~> 1.4.3"])
       s.add_runtime_dependency(%q<httparty>, ["~> 0.8.1"])
       s.add_runtime_dependency(%q<activesupport>, [">= 2.3.2"])
     else
       s.add_dependency(%q<moip-ruby>, [">= 0"])
+      s.add_dependency(%q<rspec>, ["~> 2.1.0"])
       s.add_dependency(%q<rspec>, ["~> 2.1.0"])
       s.add_dependency(%q<rspec>, ["~> 2.1.0"])
       s.add_dependency(%q<nokogiri>, ["~> 1.4.3"])
@@ -56,6 +58,7 @@ Gem::Specification.new do |s|
     end
   else
     s.add_dependency(%q<moip-ruby>, [">= 0"])
+    s.add_dependency(%q<rspec>, ["~> 2.1.0"])
     s.add_dependency(%q<rspec>, ["~> 2.1.0"])
     s.add_dependency(%q<rspec>, ["~> 2.1.0"])
     s.add_dependency(%q<nokogiri>, ["~> 1.4.3"])
