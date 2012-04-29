@@ -47,7 +47,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rspec>, ["~> 2.1.0"])
       s.add_development_dependency(%q<rspec>, ["~> 2.1.0"])
       s.add_runtime_dependency(%q<nokogiri>, ["~> 1.4.3"])
-      s.add_runtime_dependency(%q<httparty>, ["~> 0.6.1"])
+      s.add_runtime_dependency(%q<httparty>, ["~> 0.8.1"])
       s.add_runtime_dependency(%q<activesupport>, [">= 2.3.2"])
     else
       s.add_dependency(%q<moip>, [">= 0"])
@@ -58,7 +58,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rspec>, ["~> 2.1.0"])
       s.add_dependency(%q<rspec>, ["~> 2.1.0"])
       s.add_dependency(%q<nokogiri>, ["~> 1.4.3"])
-      s.add_dependency(%q<httparty>, ["~> 0.6.1"])
+      s.add_dependency(%q<httparty>, ["~> 0.8.1"])
       s.add_dependency(%q<activesupport>, [">= 2.3.2"])
     end
   else
@@ -70,7 +70,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rspec>, ["~> 2.1.0"])
     s.add_dependency(%q<rspec>, ["~> 2.1.0"])
     s.add_dependency(%q<nokogiri>, ["~> 1.4.3"])
-    s.add_dependency(%q<httparty>, ["~> 0.6.1"])
+    s.add_dependency(%q<httparty>, ["~> 0.8.1"])
     s.add_dependency(%q<activesupport>, [">= 2.3.2"])
   end
 end
