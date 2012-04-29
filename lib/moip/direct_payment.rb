@@ -1,5 +1,10 @@
 # encoding: utf-8
+require "nokogiri"
+
 module MoIP
+
+  class MissingPaymentTypeError < StandardError ; end
+  class MissingPayerError < StandardError ; end
 
   class DirectPayment
 
@@ -7,14 +12,18 @@ module MoIP
 
       # Cria uma instrução de pagamento direto
       def body(attributes = {})
+        raise(MissinPaymentTypeError, "É necessário informar a razão do pagamento") if attributes[:razao].nil?
+        raise(MissingPayerError, "É obrigatório passar as informações do pagador") if attributes[:pagador].nil?
+
         builder = Nokogiri::XML::Builder.new(:encoding => "UTF-8") do |xml|
 
           # Identificador do tipo de instrução
           xml.EnviarInstrucao {
             xml.InstrucaoUnica {
+
               # Dados da transação
               xml.Razao {
-                xml.text "Pagamento"
+                xml.text attributes[:razao]
               }
               xml.Valores {
                 xml.Valor(:moeda => "BRL") {
@@ -43,7 +52,6 @@ module MoIP
                   xml.Instituicao {
                     xml.text attributes[:instituicao]
                   }
-
                   xml.CartaoCredito {
                     xml.Numero {
                       xml.text attributes[:numero]
@@ -81,7 +89,6 @@ module MoIP
               }
 
               # Dados do pagador
-              raise(StandardError, "É obrigatório passar as informações do pagador") if attributes[:pagador].nil?
               xml.Pagador {
                 xml.Nome { xml.text attributes[:pagador][:nome] }
                 xml.LoginMoIP { xml.text attributes[:pagador][:login_moip] }
@@ -117,15 +124,23 @@ module MoIP
                   }
                 }
               end
-
+              
+              if attributes[:url_retorno]
+                # URL de retorno
+                xml.URLRetorno {
+                  xml.text attributes[:url_retorno]
+                }
+              end
+                
             }
           }
         end
+
         builder.to_xml
       end
 
     end
 
   end
-  
+
 end
