@@ -17,14 +17,14 @@ module MoIP
       def checkout(attributes = {})
         full_data = peform_action!(:post, 'EnviarInstrucao/Unica', :body => DirectPayment.body(attributes))
 
-        get_response!(full_data["ns1:EnviarInstrucaoUnicaResponse"]["Resposta"])
+        get_response!(full_data["EnviarInstrucaoUnicaResponse"]["Resposta"])
       end
 
       # Consulta dos dados das autorizações e pagamentos associados à Instrução
       def query(token)
         full_data = peform_action!(:get, "ConsultarInstrucao/#{token}")
 
-        get_response!(full_data["ns1:ConsultarTokenResponse"]["RespostaConsultar"])
+        get_response!(full_data["ConsultarTokenResponse"]["RespostaConsultar"])
       end
 
       # Retorna a URL de acesso ao MoIP
