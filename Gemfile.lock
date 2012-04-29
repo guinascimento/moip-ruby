@@ -28,8 +28,5 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport (>= 2.3.2)
-  httparty (~> 0.6.1)
   moip!
-  nokogiri (~> 1.4.3)
   rspec (~> 2.1.0)
