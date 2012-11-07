@@ -11,7 +11,7 @@ begin
     gem.summary = "Gem para utilização da API MoIP"
     gem.description = "Gem para utilização da API MoIP"
     gem.email = "guilherme.ruby@gmail.com"
-    gem.homepage = "http://github.com/guinascimento/moip"
+    gem.homepage = "http://github.com/guinascimento/moip-ruby"
     gem.authors = ["Guilherme Nascimento"]
     gem.add_development_dependency "rspec", "~> 2.1.0"
     gem.add_dependency "nokogiri", "~> 1.4.3"
