@@ -17,10 +17,16 @@ As formas de pagamento disponibilizadas pela Gem são:
 ## Instalação
 
 Instale a Gem
-    gem install moip
+
+```
+$ gem install moip
+```
 
 Adicione a Gem ao Gemfile
-    gem "moip"
+
+```ruby
+ gem "moip"
+```
 
 ## Utilização
 
